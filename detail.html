@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DTX6YM6MZH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-DTX6YM6MZH');
+</script>
+
+
+
+
+  <title>Gulu City Directory - Details</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 1rem 2rem;
+      background: #f9fafb;
+      color: #333;
+    }
+    header {
+      background-color: #004080;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+      padding: 1.5rem 2rem;
+    }
+    h1 {
+      color: #004080;
+      margin-top: 0;
+    }
+    .info p {
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+    }
+    #map {
+      width: 100%;
+      height: 400px;
+      margin-top: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+    }
+    a.back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: #0077cc;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+    img.entity-image {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gulu City Directory</h1>
+  </header>
+
+  <main>
+    <a href="index.html" class="back-link" aria-label="Back to directory">&larr; Back to Directory</a>
+    <div id="details-container">
+      <!-- Details will be injected here -->
+    </div>
+    <div id="map" aria-label="Map showing location"></div>
+  </main>
+
+  <!-- Load Google Maps JS API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+  <script>
+    // Same data as index.html (for demo; ideally fetched from backend or shared)
+    const listings = [
+      {
+        id: 1,
+        category: 'business',
+        title: 'Gulu Fresh Market',
+        description: 'A vibrant market offering fresh produce, local crafts, and daily essentials.',
+        image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80',
+        contact: 'Tel: +256 123 456 789',
+        address: 'Main Street, Gulu',
+        rating: 4.5,
+        lat: 2.7724,
+        lng: 32.2881
+      },
+      {
+        id: 2,
+        category: 'business',
+        title: 'Blue Nile Restaurant',
+        description: 'Enjoy authentic Ugandan and international cuisine in a cozy setting.',
+        image: 'https://images.unsplash.com/photo-1555992336-03a23c7f5f7d?auto=format&fit=crop&w=600&q=80',
+        contact: 'Tel: +256 987 654 321',
+        address: '2nd Avenue, Gulu',
+        rating: 4.7,
+        lat: 2.7750,
+        lng: 32.2900
+      },
+      {
+        id: 3,
+        category: 'attraction',
+        title: 'Gulu Cultural Center',
+        description: 'Explore the rich Acholi culture through exhibitions, performances, and workshops.',
+        image: 'https://images.unsplash.com/photo-1526483360610-cd5a5f8d4e2c?auto=format&fit=crop&w=600&q=80',
+        contact: 'Tel: +256 111 222 333',
+        address: 'Cultural Road, Gulu',
+        rating: 4.8,
+        lat: 2.7735,
+        lng: 32.2870
+      },
+      {
+        id: 4,
+        category: 'event',
+        title: 'Gulu Music Festival',
+        description: 'Annual festival showcasing local and regional music talents.',
+        image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80',
+        contact: 'info@gulumusicfest.ug',
+        address: 'Gulu City Park',
+        rating: 4.9,
+        lat: 2.7745,
+        lng: 32.2895
+      },
+      {
+        id: 5,
+        category: 'service',
+        title: 'Gulu City Hospital',
+        description: 'Providing quality healthcare services to the community.',
+        image: 'https://images.unsplash.com/photo-1588776814546-5c1b8f9e9a6e?auto=format&fit=crop&w=600&q=80',
+        contact: 'Tel: +256 444 555 666',
+        address: 'Hospital Road, Gulu',
+        rating: 4.6,
+        lat: 2.7760,
+        lng: 32.2850
+      },
+      {
+        id: 6,
+        category: 'service',
+        title: 'Gulu Public Library',
+        description: 'A place to read, learn, and connect with the community.',
+        image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80',
+        contact: 'Tel: +256 777 888 999',
+        address: 'Library Street, Gulu',
+        rating: 4.3,
+        lat: 2.7755,
+        lng: 32.2860
+      }
+    ];
+
+    // Utility to get URL param
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Render details of the selected entity
+    function renderDetails(entity) {
+      if (!entity) {
+        document.getElementById('details-container').innerHTML = '<p>Entity not found.</p>';
+        return;
+      }
+
+      const container = document.getElementById('details-container');
+      container.innerHTML = `
+        <h2>${entity.title}</h2>
+        <img src="${entity.image}" alt="${entity.title}" class="entity-image" />
+        <div class="info">
+          <p><strong>Category:</strong> ${entity.category.charAt(0).toUpperCase() + entity.category.slice(1)}</p>
+          <p><strong>Description:</strong> ${entity.description}</p>
+          <p><strong>Contact:</strong> ${entity.contact}</p>
+          <p><strong>Address:</strong> ${entity.address}</p>
+          <p><strong>Rating:</strong> ${entity.rating} / 5</p>
+        </div>
+      `;
+    }
+
+    // Initialize Google Map
+    function initMap(lat, lng, title) {
+      const mapDiv = document.getElementById('map');
+      const location = { lat: lat, lng: lng };
+      const map = new google.maps.Map(mapDiv, {
+        center: location,
+        zoom: 15
+      });
+      const marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        title: title
+      });
+    }
+
+    // Main logic
+    window.onload = () => {
+      const id = parseInt(getQueryParam('id'));
+      const entity = listings.find(item => item.id === id);
+      renderDetails(entity);
+      if (entity) {
+        initMap(entity.lat, entity.lng, entity.title);
+      }
+    };
+  </script>
+</body>
+</html>
